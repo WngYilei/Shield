@@ -1,7 +1,6 @@
 package com.xl.buildsrc
 
 
-
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.MethodVisitor
@@ -12,7 +11,7 @@ import org.objectweb.asm.Opcodes;
  * @Date : 2023/4/20
  * Desc :
  */
-class ShieldClassVisitor(val  cw: ClassWriter) : ClassVisitor(Opcodes.ASM7), Opcodes {
+class ShieldClassVisitor(cw: ClassVisitor) : ClassVisitor(Opcodes.ASM6, cw), Opcodes {
 
     override fun visitMethod(access: Int,
                              name: String?,
@@ -21,11 +20,12 @@ class ShieldClassVisitor(val  cw: ClassWriter) : ClassVisitor(Opcodes.ASM7), Opc
                              exceptions: Array<String?>?): MethodVisitor? {
         val methodVisitor = super.visitMethod(access, name, descriptor, signature, exceptions)
 
+        return if (name.equals("<init>")) {
+            methodVisitor
+        } else {
+            ShieldMethodVisitor(methodVisitor, access, name, descriptor)
+        }
 
-        ShieldMethodVisitor(methodVisitor, access, name, descriptor)
-
-
-        return methodVisitor
     }
 
 

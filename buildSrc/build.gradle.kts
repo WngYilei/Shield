@@ -20,4 +20,8 @@ repositories {
 dependencies {
     implementation(gradleApi())
     implementation("com.android.tools.build:gradle:3.5.2")
+    //ASM
+    implementation("org.ow2.asm:asm:9.2")
+    implementation("org.ow2.asm:asm-util:9.2")
+    implementation("org.ow2.asm:asm-commons:9.2")
 }

@@ -1,24 +1,27 @@
 plugins {
     id 'com.android.application'
+//    id 'shield-plugin'
 }
-
+import com.xl.buildsrc.ShieldPlugin
+apply plugin: ShieldPlugin
 android {
-    namespace 'com.xl.shield'
-    compileSdk 33
+
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId "com.xl.shield"
-        minSdk 24
-        targetSdk 33
+        minSdkVersion 24
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
-
+        multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
