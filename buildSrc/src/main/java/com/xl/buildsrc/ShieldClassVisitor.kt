@@ -1,10 +1,7 @@
 package com.xl.buildsrc
 
 
-import org.objectweb.asm.ClassVisitor
-import org.objectweb.asm.ClassWriter
-import org.objectweb.asm.MethodVisitor
-import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.*
 
 /**
  * @Author : wyl
@@ -12,20 +9,28 @@ import org.objectweb.asm.Opcodes;
  * Desc :
  */
 class ShieldClassVisitor(cw: ClassVisitor) : ClassVisitor(Opcodes.ASM6, cw), Opcodes {
+    var shieldAnnotationVisit: ShieldAnnotationVisit? = null
 
-    override fun visitMethod(access: Int,
-                             name: String?,
-                             descriptor: String?,
-                             signature: String?,
-                             exceptions: Array<String?>?): MethodVisitor? {
+
+    override fun visitAnnotation(descriptor: String?, visible: Boolean): AnnotationVisitor {
+        println("visitAnnotation: desc=$descriptor visible=$visible")
+        val annotationVisit = super.visitAnnotation(descriptor, visible)
+
+        if (descriptor != null) {
+            shieldAnnotationVisit = ShieldAnnotationVisit(descriptor, visible)
+            return shieldAnnotationVisit as ShieldAnnotationVisit
+        }
+        return annotationVisit
+    }
+
+
+    override fun visitMethod(access: Int, name: String?, descriptor: String?, signature: String?, exceptions: Array<String?>?): MethodVisitor? {
         val methodVisitor = super.visitMethod(access, name, descriptor, signature, exceptions)
-
-        return if (name.equals("<init>")) {
+        return if (shieldAnnotationVisit == null) {
             methodVisitor
         } else {
             ShieldMethodVisitor(methodVisitor, access, name, descriptor)
         }
-
     }
 
 

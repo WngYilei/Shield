@@ -109,12 +109,6 @@ class ShieldTransform : Transform() {
             val fileInputStream = FileInputStream(inputPath)
 
 
-            val classReader = jdk.internal.org.objectweb.asm.ClassReader(fileInputStream)
-
-            val cn = ClassNode()
-            classReader.accept(cn, 0)
-            val visibleAnnotations = cn.visibleAnnotations
-
 
 
 
