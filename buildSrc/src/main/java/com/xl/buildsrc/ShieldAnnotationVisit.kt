@@ -12,10 +12,12 @@ import org.objectweb.asm.Opcodes
 class ShieldAnnotationVisit(descriptor: String, visible: Boolean) : AnnotationVisitor(Opcodes.ASM6) {
 
 
+
     override fun visit(name: String?, value: Any?) {
         super.visit(name, value)
         println( "   name：${name}   value:${value}")
     }
+
 
 
 

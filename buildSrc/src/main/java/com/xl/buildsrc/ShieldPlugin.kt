@@ -13,7 +13,7 @@ import org.gradle.api.Project
 class ShieldPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         val appExtension: AppExtension? = target.extensions.findByType(AppExtension::class.java)
-        println("111111111")
+
         appExtension?.registerTransform(ShieldTransform())
     }
 }

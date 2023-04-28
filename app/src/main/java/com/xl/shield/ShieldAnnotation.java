@@ -16,8 +16,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface ShieldAnnotation {
     String key();
-
     int time() default 2000;
-
-
 }
