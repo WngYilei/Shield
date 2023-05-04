@@ -40,17 +40,25 @@ class ShieldTransform : Transform() {
         inputs?.forEach {
             it.directoryInputs.forEach { dir ->
 
-                val dest: File? = outputProvider?.getContentLocation(dir.name,
-                    dir.contentTypes,
-                    dir.scopes,
-                    Format.DIRECTORY)
-
+                val dest: File? = outputProvider?.getContentLocation(
+                    dir.name, dir.contentTypes, dir.scopes, Format.DIRECTORY
+                )
                 dest?.let {
                     transformDir(dir.file, it)
                 }
-
-
             }
+
+            it.jarInputs.forEach { jar ->
+
+                val dest: File? = outputProvider?.getContentLocation(
+                    jar.name, jar.contentTypes, jar.scopes, Format.JAR
+                )
+                dest?.let {
+                    FileUtils.copyFile(jar.file, it)
+                }
+            }
+
+
         }
 
     }
@@ -78,22 +86,22 @@ class ShieldTransform : Transform() {
                     transformDir(file, destFile)
                 } else if (file.isFile) {
 
-                    val ischeck  =checkClassFile(file.name)
+                    val ischeck = checkClassFile(file.name)
 
                     println("$ischeck  :  ${file.name}")
+                    System.err.println("1")
+//                    if (ischeck || !file.path.contains("androidx")) {
+//                        System.err.println("2")
+//                        FileUtils.touch(destFile)
+//                        asmHandleFile(file.absolutePath, destFile.absolutePath)
+//                    }
 
-                    if (ischeck || !file.path.contains("androidx")) {
-                        FileUtils.touch(destFile)
-                        asmHandleFile(file.absolutePath, destFile.absolutePath)
-                    } else {
-                        println("${file.isDirectory}")
-                        FileUtils.copyFile(file, dest)
-                    }
-
+                    FileUtils.touch(destFile)
+                    asmHandleFile(file.absolutePath, destFile.absolutePath)
                 }
             }
         } catch (e: Exception) {
-            println("transformDir:" + e)
+            System.err.println(e)
         }
     }
 
