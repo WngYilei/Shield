@@ -5,9 +5,12 @@ import com.android.build.api.transform.QualifiedContent
 import com.android.build.api.transform.Transform
 import com.android.build.api.transform.TransformInvocation
 import com.android.build.gradle.internal.pipeline.TransformManager
+
 import org.apache.commons.io.FileUtils
 import org.objectweb.asm.ClassReader
+import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.ClassWriter
+import org.objectweb.asm.tree.ClassNode
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -88,20 +91,34 @@ class ShieldTransform : Transform() {
 
                     val ischeck = checkClassFile(file.name)
 
-                    println("$ischeck  :  ${file.name}")
-                    System.err.println("1")
-//                    if (ischeck || !file.path.contains("androidx")) {
-//                        System.err.println("2")
-//                        FileUtils.touch(destFile)
-//                        asmHandleFile(file.absolutePath, destFile.absolutePath)
-//                    }
-
                     FileUtils.touch(destFile)
-                    asmHandleFile(file.absolutePath, destFile.absolutePath)
+                    if (ischeck) {
+                        println("写入字节码的类:  ${file.name}")
+                        asmHandleFile(file.absolutePath, destFile.absolutePath)
+                    } else {
+                        asmDefaultHandleFile(file.absolutePath, destFile.absolutePath)
+                    }
                 }
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             System.err.println(e)
+        }
+    }
+
+
+    private fun asmDefaultHandleFile(inputPath: String, destPath: String) {
+        try {
+            val fileInputStream = FileInputStream(inputPath)
+            val cr = ClassReader(fileInputStream)
+            val cw = ClassWriter(ClassWriter.COMPUTE_FRAMES)
+            val visitor = ShieldDefaultClassVisitor(cw)
+            cr.accept(visitor, 0)
+            val fos = FileOutputStream(destPath)
+            fos.write(cw.toByteArray())
+            fos.close()
+        } catch (e: Exception) {
+            println(e)
         }
     }
 
@@ -117,14 +134,13 @@ class ShieldTransform : Transform() {
             fos.write(cw.toByteArray())
             fos.close()
         } catch (e: Exception) {
-            println(e)
+            System.err.println("asmHandleFile:$e")
+            e.printStackTrace()
         }
     }
 
-
-    fun checkClassFile(name: String): Boolean {
-        //只处理需要的class文件
-        return name.endsWith(".class") && !name.startsWith("R\$") && "R.class" != name && "BuildConfig.class" != name && "android/support/v4/app/FragmentActivity.class" == name
+    private fun checkClassFile(name: String): Boolean {
+        return name.endsWith(".class") && !name.startsWith("R$") && "R.class" != name && "BuildConfig.class" != name
     }
 
 }
