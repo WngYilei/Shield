@@ -3,8 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 //    id 'shield-plugin'
 }
-import com.xl.buildsrc.ShieldPlugin
-apply plugin: ShieldPlugin
+//import com.xl.buildsrc.ShieldPlugin
+//apply plugin: ShieldPlugin
 android {
 
     compileSdkVersion 33
@@ -42,6 +42,4 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-
-//    kapt 'com.google.auto.service:auto-service:1.0-rc4'
 }

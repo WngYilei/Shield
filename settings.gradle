@@ -12,3 +12,4 @@ pluginManagement {
 rootProject.name = "Shield"
 include ':app'
 include ':shieldlib'
+include ':shieldplugin'
