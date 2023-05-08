@@ -1,7 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'java-gradle-plugin'
 apply plugin: 'maven-publish'
-//apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'kotlin'
 
 dependencies {
@@ -24,7 +24,7 @@ java {
 }
 
 
-//group='com.github.WngYilei'
+group='com.github.WngYilei'
 
 gradlePlugin {
     plugins {
