@@ -1,5 +1,6 @@
-package com.xl.buildsrc
+package com.xl.shieldplugin
 
+import com.xl.shieldplugin.ShieldAnnotationVisit
 import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.Label
 import org.objectweb.asm.MethodVisitor

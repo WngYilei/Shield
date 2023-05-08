@@ -1,8 +1,10 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-//    id 'shield-plugin'
 }
+
+apply plugin: 'shield-plugin'
+
 //import com.xl.buildsrc.ShieldPlugin
 //apply plugin: ShieldPlugin
 android {
@@ -29,6 +31,10 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
 }
 

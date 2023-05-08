@@ -22,7 +22,6 @@ public enum OrderRepository {
 //    @ShieldAnnotation(key = "calculateOrderInfo",time = 2000)
     public void calculateOrderInfo(){
         Log.e(TAG, "计算订单数据");
-
     }
 
 }

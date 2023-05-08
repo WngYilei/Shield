@@ -1,4 +1,4 @@
-package com.xl.buildsrc
+package com.xl.shieldplugin
 
 import com.android.build.api.transform.Format
 import com.android.build.api.transform.QualifiedContent
@@ -8,9 +8,7 @@ import com.android.build.gradle.internal.pipeline.TransformManager
 
 import org.apache.commons.io.FileUtils
 import org.objectweb.asm.ClassReader
-import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.ClassWriter
-import org.objectweb.asm.tree.ClassNode
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream

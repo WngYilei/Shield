@@ -1,4 +1,4 @@
-package com.xl.buildsrc
+package com.xl.shieldplugin
 
 import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.Opcodes
