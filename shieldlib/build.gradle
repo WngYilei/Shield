@@ -2,7 +2,7 @@ plugins {
     id 'com.android.library'
 
 }
-
+apply plugin: 'com.github.dcendents.android-maven'
 android {
 //    namespace 'com.xl.shieldlib'
     compileSdkVersion 33
@@ -31,3 +31,4 @@ android {
 dependencies {
 
 }
+

@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
-//apply plugin: 'shield-plugin'
+apply plugin: 'shield-plugin'
 
 //import com.xl.buildsrc.ShieldPlugin
 //apply plugin: ShieldPlugin
