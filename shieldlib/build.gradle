@@ -3,6 +3,7 @@ plugins {
 
 }
 apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'maven-publish'
 android {
 //    namespace 'com.xl.shieldlib'
     compileSdkVersion 33
@@ -32,3 +33,14 @@ dependencies {
 
 }
 
+group = 'com.xl.shieldlib'
+version = "1.0.1"
+
+//打包上传到本地
+uploadArchives {
+    repositories {
+        flatDir {
+            dirs '../repo/'
+        }
+    }
+}
