@@ -1,6 +1,6 @@
 package com.xl.shieldplugin
 
-import com.xl.shieldplugin.ShieldAnnotationVisit
+
 import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.Label
 import org.objectweb.asm.MethodVisitor
@@ -17,7 +17,7 @@ class ShieldMethodVisitor(val methodVisitor: MethodVisitor,
                           access: Int,
                           name: String?,
                           descriptor: String?) :
-    AdviceAdapter(Opcodes.ASM6, methodVisitor, access, name, descriptor) {
+    AdviceAdapter(Opcodes.ASM5, methodVisitor, access, name, descriptor) {
 
     var shieldAnnotationVisit: ShieldAnnotationVisit? = null
 
@@ -35,9 +35,10 @@ class ShieldMethodVisitor(val methodVisitor: MethodVisitor,
 
     override fun onMethodEnter() {
         super.onMethodEnter()
-       if (shieldAnnotationVisit == null) return
+        if (shieldAnnotationVisit == null) return
 
-        println("写入字节码  key:${shieldAnnotationVisit?.key}")
+        printMethod(name,shieldAnnotationVisit?.key,shieldAnnotationVisit?.time)
+
         val label0 = Label()
         methodVisitor.visitLabel(label0)
         methodVisitor.visitLineNumber(19, label0)
@@ -49,7 +50,7 @@ class ShieldMethodVisitor(val methodVisitor: MethodVisitor,
             false
         )
         methodVisitor.visitLdcInsn(shieldAnnotationVisit?.key)
-        methodVisitor.visitIntInsn(SIPUSH, shieldAnnotationVisit?.time?:1000)
+        methodVisitor.visitIntInsn(SIPUSH, shieldAnnotationVisit?.time ?: 1000)
         methodVisitor.visitMethodInsn(
             INVOKEVIRTUAL,
             "com/xl/shieldlib/ShieldUtils",
@@ -70,4 +71,17 @@ class ShieldMethodVisitor(val methodVisitor: MethodVisitor,
     }
 
 
+}
+
+private val LINE = "═════════════════════════════════════════"
+
+fun printMethod(name: String, key: String?, time: Int?) {
+    val msgBuilder: StringBuilder = StringBuilder(16 * 10)
+    msgBuilder.append(" ")
+        .append("\n╔").append(LINE).append("╗")
+        .append("\n║ [Method]:").append(name)
+        .append("\n║ [KEY]:").append(key)
+        .append("\n║ [TIME]:").append("$time ms")
+        .append("\n╚").append(LINE).append("╝")
+    println(msgBuilder)
 }

@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
                 OrderRepository.INSTANCE.getOrderInfo();
 
+                FoodRepository.INSTANCE.test();
             }
         });
     }

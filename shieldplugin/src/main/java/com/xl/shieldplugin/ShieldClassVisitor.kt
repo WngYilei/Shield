@@ -1,6 +1,7 @@
-package com.xl.shieldplugin
+package com.xl.buildsrc
 
 
+import com.xl.shieldplugin.ShieldMethodVisitor
 import org.objectweb.asm.*
 
 /**
@@ -8,8 +9,7 @@ import org.objectweb.asm.*
  * @Date : 2023/4/20
  * Desc :
  */
-class ShieldClassVisitor(cw: ClassVisitor) : ClassVisitor(Opcodes.ASM9, cw) {
-
+class ShieldClassVisitor(cw: ClassVisitor) : ClassVisitor(Opcodes.ASM5, cw) {
 
     override fun visitMethod(access: Int,
                              name: String?,

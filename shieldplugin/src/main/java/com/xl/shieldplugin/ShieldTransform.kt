@@ -5,7 +5,7 @@ import com.android.build.api.transform.QualifiedContent
 import com.android.build.api.transform.Transform
 import com.android.build.api.transform.TransformInvocation
 import com.android.build.gradle.internal.pipeline.TransformManager
-
+import com.xl.buildsrc.ShieldClassVisitor
 import org.apache.commons.io.FileUtils
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
@@ -26,8 +26,7 @@ class ShieldTransform : Transform() {
     override fun getInputTypes(): MutableSet<QualifiedContent.ContentType> =
         TransformManager.CONTENT_CLASS
 
-    override fun getScopes(): MutableSet<in QualifiedContent.Scope> =
-        TransformManager.SCOPE_FULL_PROJECT
+    override fun getScopes(): MutableSet<in QualifiedContent.Scope> =  TransformManager.SCOPE_FULL_PROJECT
 
     override fun isIncremental(): Boolean = false
 
@@ -83,18 +82,23 @@ class ShieldTransform : Transform() {
                 val destFile = File(destFilePath)
 
                 if (file.isDirectory) {
-                    //如果是文件夹，继续遍历
                     transformDir(file, destFile)
                 } else if (file.isFile) {
 
-                    val ischeck = checkClassFile(file.name)
+                    val ischeck = checkClassFile(file)
 
                     FileUtils.touch(destFile)
                     if (ischeck) {
-                        println("写入字节码的类:  ${file.name}")
-                        asmHandleFile(file.absolutePath, destFile.absolutePath)
+                        try {
+                            asmHandleFile(file.absolutePath, destFile.absolutePath)
+                        } catch (e: Exception) {
+                            System.err.println("asmHandleFile:class文件：${file.name}    异常信息：$e")
+                            e.printStackTrace()
+                            FileUtils.copyFile(file,destFile)
+                        }
                     } else {
-                        asmDefaultHandleFile(file.absolutePath, destFile.absolutePath)
+
+                        FileUtils.copyFile(file,destFile)
                     }
                 }
             }
@@ -105,40 +109,20 @@ class ShieldTransform : Transform() {
     }
 
 
-    private fun asmDefaultHandleFile(inputPath: String, destPath: String) {
-        try {
-            val fileInputStream = FileInputStream(inputPath)
-            val cr = ClassReader(fileInputStream)
-            val cw = ClassWriter(ClassWriter.COMPUTE_FRAMES)
-            val visitor = ShieldDefaultClassVisitor(cw)
-            cr.accept(visitor, ClassReader.EXPAND_FRAMES)
-            val fos = FileOutputStream(destPath)
-            fos.write(cw.toByteArray())
-            fos.close()
-        } catch (e: Exception) {
-            println(e)
-        }
-    }
-
-
     private fun asmHandleFile(inputPath: String, destPath: String) {
-        try {
-            val fileInputStream = FileInputStream(inputPath)
-            val cr = ClassReader(fileInputStream)
-            val cw = ClassWriter(ClassWriter.COMPUTE_FRAMES)
-            val visitor = ShieldClassVisitor(cw)
-            cr.accept(visitor, ClassReader.EXPAND_FRAMES)
-            val fos = FileOutputStream(destPath)
-            fos.write(cw.toByteArray())
-            fos.close()
-        } catch (e: Exception) {
-            System.err.println("asmHandleFile:$e")
-            e.printStackTrace()
-        }
+
+        val fileInputStream = FileInputStream(inputPath)
+        val cr = ClassReader(fileInputStream)
+        val cw = ClassWriter(ClassWriter.COMPUTE_MAXS)
+        val visitor = ShieldClassVisitor(cw)
+        cr.accept(visitor, ClassReader.EXPAND_FRAMES)
+        val fos = FileOutputStream(destPath)
+        fos.write(cw.toByteArray())
+        fos.close()
     }
 
-    private fun checkClassFile(name: String): Boolean {
-        return name.endsWith(".class") && !name.startsWith("R$") && "R.class" != name && "BuildConfig.class" != name
+    private fun checkClassFile(file: File): Boolean {
+        return file.name.endsWith(".class") && !file.name.startsWith("R$") && "R.class" != file.name && "BuildConfig.class" != file.name && !file.path.contains("android")
     }
 
 }

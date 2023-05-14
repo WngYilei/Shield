@@ -9,7 +9,7 @@ import org.objectweb.asm.Opcodes
  * @Date : 2023/4/23
  * Desc :
  */
-class ShieldAnnotationVisit : AnnotationVisitor(Opcodes.ASM6) {
+class ShieldAnnotationVisit : AnnotationVisitor(Opcodes.ASM5) {
 
     var  key = ""
     var  time = 0
